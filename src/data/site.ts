@@ -39,7 +39,7 @@ export const owner = {
    */
   primaryContact: { pt: "whatsapp", en: "email" } satisfies Record<Lang, ContactChannel>,
   /** Endereço público deste portfólio, sem barra no final (ex.: https://vitorotavio.vercel.app). Usado no Open Graph e no JSON-LD. */
-  siteUrl: "",
+  siteUrl: "https://portfolio-tau-beryl-77.vercel.app",
 };
 
 export const seo = {
