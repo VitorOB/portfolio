@@ -38,8 +38,8 @@ export const owner = {
    * "email" só vale se `email` estiver preenchido; senão cai para o WhatsApp.
    */
   primaryContact: { pt: "whatsapp", en: "email" } satisfies Record<Lang, ContactChannel>,
-  /** Endereço público deste portfólio, sem barra no final (ex.: https://vitorotavio.vercel.app). Usado no Open Graph e no JSON-LD. */
-  siteUrl: "https://vitorportfolio-sites.vercel.app",
+  /** Endereço público deste portfólio, sem barra no final (ex.: https://portfolio.vitorotavio.workers.dev). Usado no Open Graph, nos links de idioma e no JSON-LD. */
+  siteUrl: "https://portfolio.vitorotavio.workers.dev",
 };
 
 export const seo = {
