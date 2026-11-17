@@ -14,7 +14,7 @@ export type ContactChannel = "whatsapp" | "email";
 export const owner = {
   name: "Vitor Otávio",
   /** Só números, com código do país e DDD (ex.: 5531999999999). Preencher antes de publicar. */
-  whatsappNumber: "",
+  whatsappNumber: "5531993628211",
   /** Mensagem que já vem escrita ao abrir o WhatsApp, no idioma da página. */
   whatsappMessage: {
     pt: "Olá, Vitor! Vi seu portfólio e quero saber mais sobre um site para o meu negócio.",
