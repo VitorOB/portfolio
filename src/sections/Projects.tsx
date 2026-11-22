@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type FocusEvent, type ReactNode } from "react";
+import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { projects, showComingSoon } from "../data/site";
 import { ProjectCard, YourBusinessCard } from "../components/ProjectCard";
 import { Reveal } from "../components/Reveal";
@@ -18,31 +18,47 @@ if (import.meta.env.DEV) {
 
 const LIST_ID = "lista-projetos";
 
-/**
- * Largura de cada cartão no carrossel:
- * celular 1 cartão (com o próximo aparecendo), tablet 2, desktop 3.
- * As larguras descontam o espaço entre os cartões (gap-4 = 16px, sm:gap-6 = 24px).
- */
-const slideWidth = "w-[85%] sm:w-[calc((100%-24px)/2)] lg:w-[calc((100%-48px)/3)]";
+/** Tempo que cada projeto fica parado antes de a lista avançar sozinha. */
+const AUTOPLAY_MS = 4500;
 
 /**
+ * Largura de cada cartão no carrossel: celular 1 cartão (com o próximo aparecendo),
+ * a partir do tablet 2 cartões. A largura desconta o espaço entre eles (md:gap-6 = 24px).
+ *
  * `relative` em cada item: os textos só para leitor de tela (.sr-only) são `position: absolute`
  * e, sem um ancestral posicionado aqui dentro, escapam do recorte da rolagem e alargam a página.
  */
-const slideClass = `relative shrink-0 snap-start ${slideWidth}`;
+const slideClass = "relative shrink-0 snap-start w-[85%] md:w-[calc((100%-24px)/2)]";
 
 type ScrollState = { canPrev: boolean; canNext: boolean; progress: number; ratio: number };
 
-/** Acompanha a posição da rolagem horizontal para os botões e a barra de progresso. */
+const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Carrossel com rolagem nativa (scroll-snap) e passagem automática.
+ * A passagem automática para enquanto o visitante interage (mouse em cima, foco do teclado,
+ * dedo na tela), quando a seção sai da tela ou a aba fica em segundo plano, e pode ser
+ * pausada no botão (WCAG 2.2.2). Com "reduzir movimento" ligado, começa pausada.
+ */
 function useCarousel() {
   const ref = useRef<HTMLUListElement>(null);
   const [state, setState] = useState<ScrollState>({ canPrev: false, canNext: false, progress: 0, ratio: 1 });
+  const [userPaused, setUserPaused] = useState(prefersReducedMotion);
 
+  // Motivos temporários para não avançar (não precisam renderizar de novo).
+  const hovering = useRef(false);
+  const focused = useRef(false);
+  const pointerDown = useRef(false);
+  const onScreen = useRef(false);
+  const lastMove = useRef(Date.now());
+
+  // Estado dos botões e da barra de progresso.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     let frame = 0;
     const update = () => {
+      lastMove.current = Date.now();
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const max = el.scrollWidth - el.clientWidth;
@@ -58,29 +74,83 @@ function useCarousel() {
     el.addEventListener("scroll", update, { passive: true });
     const ro = new ResizeObserver(update);
     ro.observe(el);
+    const io = new IntersectionObserver(([entry]) => (onScreen.current = entry.isIntersecting), { threshold: 0.3 });
+    io.observe(el);
     return () => {
       cancelAnimationFrame(frame);
       el.removeEventListener("scroll", update);
       ro.disconnect();
+      io.disconnect();
     };
   }, []);
 
-  /** Avança ou volta exatamente um cartão. */
-  const step = useCallback((direction: 1 | -1) => {
+  /** Índice do cartão alinhado ao início da área visível. */
+  const currentIndex = useCallback(() => {
     const el = ref.current;
-    const card = el?.querySelector("li");
-    if (!el || !card) return;
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: reduced ? "auto" : "smooth" });
+    if (!el) return 0;
+    const start = el.getBoundingClientRect().left + parseFloat(getComputedStyle(el).paddingLeft);
+    let best = 0;
+    let bestDist = Infinity;
+    Array.from(el.children).forEach((li, i) => {
+      const dist = Math.abs(li.getBoundingClientRect().left - start);
+      if (dist < bestDist) [best, bestDist] = [i, dist];
+    });
+    return best;
   }, []);
 
-  return { ref, state, step };
+  /** Rola até alinhar exatamente o cartão `index` (evita parar com um cartão cortado). */
+  const goTo = useCallback((index: number) => {
+    const el = ref.current;
+    const li = el?.children[index] as HTMLElement | undefined;
+    if (!el || !li) return;
+    const padding = parseFloat(getComputedStyle(el).paddingLeft);
+    const left = el.scrollLeft + li.getBoundingClientRect().left - el.getBoundingClientRect().left - padding;
+    el.scrollTo({ left, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    lastMove.current = Date.now();
+  }, []);
+
+  const next = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 4;
+    goTo(atEnd ? 0 : currentIndex() + 1);
+  }, [goTo, currentIndex]);
+
+  const prev = useCallback(() => goTo(Math.max(0, currentIndex() - 1)), [goTo, currentIndex]);
+
+  // Passagem automática: confere a cada meio segundo se já pode avançar.
+  useEffect(() => {
+    if (userPaused) return;
+    const timer = window.setInterval(() => {
+      const busy = hovering.current || focused.current || pointerDown.current;
+      if (busy || !onScreen.current || document.hidden) {
+        lastMove.current = Date.now();
+        return;
+      }
+      if (Date.now() - lastMove.current >= AUTOPLAY_MS) next();
+    }, 500);
+    return () => window.clearInterval(timer);
+  }, [userPaused, next]);
+
+  /** Eventos que pausam enquanto o visitante interage com a lista. */
+  const interactionProps = {
+    onMouseEnter: () => (hovering.current = true),
+    onMouseLeave: () => (hovering.current = false),
+    onFocus: () => (focused.current = true),
+    onBlur: (e: FocusEvent) => {
+      if (!e.currentTarget.contains(e.relatedTarget as Node | null)) focused.current = false;
+    },
+    onPointerDown: () => (pointerDown.current = true),
+    onPointerUp: () => (pointerDown.current = false),
+    onPointerCancel: () => (pointerDown.current = false),
+  };
+
+  return { ref, state, next, prev, userPaused, setUserPaused, interactionProps };
 }
 
-function NavButton({ label, disabled, onClick, children }: {
+function NavButton({ label, disabled = false, onClick, children }: {
   label: string;
-  disabled: boolean;
+  disabled?: boolean;
   onClick: () => void;
   children: ReactNode;
 }) {
@@ -100,7 +170,7 @@ function NavButton({ label, disabled, onClick, children }: {
 
 export function Projects() {
   const { t } = useLang();
-  const { ref, state, step } = useCarousel();
+  const { ref, state, next, prev, userPaused, setUserPaused, interactionProps } = useCarousel();
   const scrollable = state.canPrev || state.canNext;
 
   return (
@@ -115,10 +185,16 @@ export function Projects() {
               <p className="text-sm text-muted">{t.projects.note}</p>
               {scrollable && (
                 <div className="flex gap-2">
-                  <NavButton label={t.projects.prev} disabled={!state.canPrev} onClick={() => step(-1)}>
+                  <NavButton
+                    label={userPaused ? t.projects.play : t.projects.pause}
+                    onClick={() => setUserPaused((v) => !v)}
+                  >
+                    {userPaused ? <Play aria-hidden="true" size={18} /> : <Pause aria-hidden="true" size={18} />}
+                  </NavButton>
+                  <NavButton label={t.projects.prev} disabled={!state.canPrev} onClick={prev}>
                     <ArrowLeft aria-hidden="true" size={20} />
                   </NavButton>
-                  <NavButton label={t.projects.next} disabled={!state.canNext} onClick={() => step(1)}>
+                  <NavButton label={t.projects.next} onClick={next}>
                     <ArrowRight aria-hidden="true" size={20} />
                   </NavButton>
                 </div>
@@ -132,7 +208,8 @@ export function Projects() {
           ref={ref}
           id={LIST_ID}
           aria-label={t.projects.listLabel}
-          className="-mx-2 flex snap-x snap-mandatory scroll-px-2 gap-4 overflow-x-auto overscroll-x-contain p-2 scrollbar-none sm:gap-6 [&::-webkit-scrollbar]:hidden"
+          {...interactionProps}
+          className="-mx-2 flex snap-x snap-mandatory scroll-px-2 gap-4 overflow-x-auto overscroll-x-contain p-2 scrollbar-none md:gap-6 [&::-webkit-scrollbar]:hidden"
         >
           {visible.map((p) => (
             <li key={p.slug} className={slideClass}>
@@ -148,7 +225,7 @@ export function Projects() {
         {scrollable && (
           <div aria-hidden="true" className="relative mt-6 h-0.5 overflow-hidden rounded-full bg-line">
             <div
-              className="absolute inset-y-0 rounded-full bg-ink"
+              className="absolute inset-y-0 rounded-full bg-ink transition-[left] duration-300"
               style={{ width: `${state.ratio * 100}%`, left: `${state.progress * (1 - state.ratio) * 100}%` }}
             />
           </div>
