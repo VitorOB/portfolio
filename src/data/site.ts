@@ -135,7 +135,7 @@ export const projects: Project[] = [
     },
     url: "https://ana-lira-beauty.vercel.app",
     image: "/projects/ana-lira-beauty.webp",
-    // Sem versão em inglês: no portfólio em inglês, o link abre o site em português.
+    hasEnglish: true,
     status: "published",
   },
   // Exemplo de projeto ainda não pronto (aparece com selo "Em breve" se showComingSoon = true):
