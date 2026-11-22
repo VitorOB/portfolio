@@ -46,7 +46,7 @@ export function ProjectCard({ project }: { project: Project }) {
           />
           <span
             aria-hidden="true"
-            className="relative px-6 text-center font-display text-[clamp(1.75rem,1rem+3vw,2.75rem)] leading-none font-semibold tracking-[-0.02em] text-ink/80"
+            className="relative px-6 text-center font-display text-[clamp(1.5rem,1rem+1.2vw,1.875rem)] leading-none font-semibold tracking-[-0.02em] text-ink/80"
           >
             {project.name}
           </span>
@@ -109,7 +109,7 @@ export function YourBusinessCard() {
       {...(contact.external && { target: "_blank", rel: "noopener" })}
     >
       <Thumb className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-line bg-bg px-6 text-center">
-        <span className="font-display text-[clamp(1.75rem,1rem+3vw,2.75rem)] leading-none font-semibold tracking-[-0.02em]">
+        <span className="font-display text-[clamp(1.5rem,1rem+1.2vw,1.875rem)] leading-none font-semibold tracking-[-0.02em]">
           {t.projects.yourBusiness}
         </span>
         <span className="font-semibold text-accent group-hover:underline">
