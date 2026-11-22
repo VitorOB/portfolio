@@ -18,8 +18,11 @@ if (import.meta.env.DEV) {
 
 const LIST_ID = "lista-projetos";
 
-/** Tempo que cada projeto fica parado antes de a lista avançar sozinha. */
-const AUTOPLAY_MS = 4500;
+/**
+ * Tempo que cada projeto fica parado antes de a lista avançar sozinha.
+ * Somado à animação da rolagem (~0,5 s), dá cerca de 2,5 s entre um avanço e outro.
+ */
+const AUTOPLAY_MS = 2000;
 
 /**
  * Largura de cada cartão no carrossel: celular 1 cartão (com o próximo aparecendo),
@@ -118,7 +121,7 @@ function useCarousel() {
 
   const prev = useCallback(() => goTo(Math.max(0, currentIndex() - 1)), [goTo, currentIndex]);
 
-  // Passagem automática: confere a cada meio segundo se já pode avançar.
+  // Passagem automática: confere a cada 250 ms se já pode avançar.
   useEffect(() => {
     if (userPaused) return;
     const timer = window.setInterval(() => {
@@ -128,7 +131,7 @@ function useCarousel() {
         return;
       }
       if (Date.now() - lastMove.current >= AUTOPLAY_MS) next();
-    }, 500);
+    }, 250);
     return () => window.clearInterval(timer);
   }, [userPaused, next]);
 
