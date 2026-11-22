@@ -1,5 +1,6 @@
 /**
- * npm run screenshots
+ * npm run screenshots                     → todos os projetos
+ * npm run screenshots -- ana-lira-beauty  → só os slugs informados
  * Captura a primeira dobra (1440×900) de cada projeto publicado com url em src/data/site.ts,
  * converte para WebP com 1200px de largura e salva em public/projects/<slug>.webp.
  * Se um site falhar, gera uma miniatura temporária em cor sólida com o nome do projeto.
@@ -36,7 +37,12 @@ async function placeholder(project, file) {
 }
 
 const { projects } = await loadSiteData();
-const targets = projects.filter((p) => p.status === "published" && p.image);
+const only = process.argv.slice(2);
+const unknown = only.filter((slug) => !projects.some((p) => p.slug === slug));
+if (unknown.length) throw new Error(`Slug não encontrado em site.ts: ${unknown.join(", ")}`);
+const targets = projects.filter(
+  (p) => p.status === "published" && p.image && (only.length === 0 || only.includes(p.slug)),
+);
 await mkdir(outDir, { recursive: true });
 
 const browser = await chromium.launch();

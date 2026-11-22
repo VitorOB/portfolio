@@ -126,6 +126,18 @@ export const projects: Project[] = [
     hasEnglish: true,
     status: "published",
   },
+  {
+    slug: "ana-lira-beauty",
+    name: "Ana Lira Beauty",
+    description: {
+      pt: "Maquiadora de noivas · site one page",
+      en: "Bridal makeup artist · one-page website",
+    },
+    url: "https://ana-lira-beauty.vercel.app",
+    image: "/projects/ana-lira-beauty.webp",
+    // Sem versão em inglês: no portfólio em inglês, o link abre o site em português.
+    status: "published",
+  },
   // Exemplo de projeto ainda não pronto (aparece com selo "Em breve" se showComingSoon = true):
   // { slug: "clinica", name: "Clínica", description: { pt: "Saúde · agendamento", en: "Healthcare · booking" },
   //   url: "", image: "", status: "coming-soon", placeholderColor: "#E6ECF5" },
