@@ -21,12 +21,15 @@ npm run lint
 | `owner.siteUrl` | Endereço final do portfólio, sem barra no fim. Usado no Open Graph, canonical e JSON-LD. |
 | `owner.instagram` / `owner.email` | Opcionais. Vazios = links não aparecem no rodapé. |
 | `showComingSoon` | `false` esconde todos os cartões "Em breve". |
+| `showPricing` / `pricing` / `highlightLabel` | Seção Preços: valores, listas do que está incluso e a mensagem que o botão "Quero este" já leva escrita. `showPricing = false` esconde a seção e o item do menu. |
+| `faq` | Perguntas e respostas da seção Dúvidas. As versões em português também viram o JSON-LD `FAQPage` do HTML. |
 
 ## Idiomas (português e inglês)
 
 - Textos das seções: `src/data/content.ts` (objetos `pt` e `en`, com o mesmo formato).
 - Textos ligados aos dados (descrição e selo dos projetos, mensagem do WhatsApp, título e descrição do Google) ficam em `src/data/site.ts` como `{ pt: "...", en: "..." }`.
-- Idioma inicial: `?lang=en` na URL → escolha salva no navegador → fuso horário do Brasil = PT → idioma do navegador (português = PT, qualquer outro = EN).
+- Idioma inicial: `?lang=` na URL → fuso horário do Brasil = PT → idioma do navegador (português = PT, qualquer outro = EN). A escolha não fica salva no navegador; o botão de idioma grava `?lang=` no endereço.
+- Preços: em reais no português e em dólar no inglês (`pricing` em `src/data/site.ts`). A versão em inglês fala de cartão, PayPal ou transferência e de domínio no nome do cliente, sem Pix nem .com.br.
 - Para mandar o link já em inglês a um cliente: `https://seu-site/?lang=en`.
 
 ## Adicionar um projeto novo

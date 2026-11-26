@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { owner } from "../data/site";
+import { owner, showPricing } from "../data/site";
 import { useLang } from "../i18n/lang";
 import { ContactButton } from "../components/ContactButton";
 
@@ -23,6 +23,8 @@ function LanguageSwitch() {
 
 export function Header() {
   const { t } = useLang();
+  // Com a seção de preços escondida (site.ts → showPricing), o item "Preços" some do menu.
+  const navItems = t.nav.items.filter((item) => showPricing || item.id !== "precos");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -74,7 +76,7 @@ export function Header() {
 
         <nav aria-label={t.nav.label} className="hidden lg:block">
           <ul className="flex items-center gap-1">
-            {t.nav.items.map((item) => (
+            {navItems.map((item) => (
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
@@ -111,7 +113,7 @@ export function Header() {
       <div id="menu-mobile" ref={panelRef} hidden={!open} className="menu-panel border-t border-line bg-bg lg:hidden">
         <nav aria-label={`${t.nav.label} (mobile)`} className="container-site py-4">
           <ul className="flex flex-col">
-            {t.nav.items.map((item) => (
+            {navItems.map((item) => (
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}

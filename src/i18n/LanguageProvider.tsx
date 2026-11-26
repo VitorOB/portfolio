@@ -1,18 +1,25 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { content } from "../data/content";
 import { seo, type Lang } from "../data/site";
-import { LangContext, detectLang, saveLang } from "./lang";
+import { LangContext, defaultLang, detectLang } from "./lang";
+
+/** Remove a escolha antiga salva no navegador pelas versões anteriores do site. */
+try {
+  localStorage.removeItem("lang");
+} catch {
+  /* armazenamento bloqueado: nada a limpar */
+}
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(detectLang);
 
   const setLang = useCallback((next: Lang) => {
-    saveLang(next);
     setLangState(next);
-    // Mantém ?lang= na URL só para inglês, para o link poder ser compartilhado já no idioma.
+    // A escolha fica no endereço (?lang=): vale ao recarregar e ao compartilhar o link.
+    // Se for o idioma padrão do visitante, o endereço fica limpo.
     const url = new URL(window.location.href);
-    if (next === "en") url.searchParams.set("lang", "en");
-    else url.searchParams.delete("lang");
+    if (next === defaultLang()) url.searchParams.delete("lang");
+    else url.searchParams.set("lang", next);
     window.history.replaceState(null, "", url);
   }, []);
 

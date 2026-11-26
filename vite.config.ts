@@ -1,7 +1,7 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { owner, seo } from "./src/data/site";
+import { faq, owner, seo } from "./src/data/site";
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -31,6 +31,17 @@ function seoFromSiteData(): Plugin {
         ...(sameAs.length > 0 && { sameAs }),
       };
 
+      const faqLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        inLanguage: "pt-BR",
+        mainEntity: faq.map((f) => ({
+          "@type": "Question",
+          name: f.question.pt,
+          acceptedAnswer: { "@type": "Answer", text: f.answer.pt },
+        })),
+      };
+
       const tags = [
         `<title>${escapeHtml(seo.title.pt)}</title>`,
         `<meta name="description" content="${escapeHtml(seo.description.pt)}" />`,
@@ -55,6 +66,8 @@ function seoFromSiteData(): Plugin {
         `<meta property="og:image:alt" content="${escapeHtml(seo.title.pt)}" />`,
         `<meta name="twitter:card" content="summary_large_image" />`,
         `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>`,
+        // Perguntas frequentes, só em português (o HTML entregue é o da versão PT).
+        `<script type="application/ld+json">${JSON.stringify(faqLd).replace(/</g, "\\u003c")}</script>`,
       ].join("\n    ");
 
       return html.replace("<!--seo-->", tags);

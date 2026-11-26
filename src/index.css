@@ -352,6 +352,40 @@
     }
   }
 
+  /*
+   * Acordeão das dúvidas: a resposta abre com a altura animada onde o navegador permite
+   * (::details-content + interpolate-size); nos outros abre na hora. O "+" gira e vira "×".
+   */
+  .faq-item {
+    interpolate-size: allow-keywords;
+  }
+
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 280ms var(--ease-out),
+      content-visibility 280ms allow-discrete;
+  }
+
+  .faq-item[open]::details-content {
+    block-size: auto;
+  }
+
+  .faq-icon {
+    transition:
+      background-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .faq-icon > svg {
+    transition: transform 240ms var(--ease-out);
+  }
+
+  .faq-item[open] .faq-icon > svg {
+    transform: rotate(45deg);
+  }
+
   /* Reduzir movimento: some todo deslocamento, fica só o fade, tudo junto. */
   @media (prefers-reduced-motion: reduce) {
     .js .hero-line > span,
@@ -376,6 +410,11 @@
 
     .live-dot::after {
       animation: none;
+    }
+
+    .faq-item::details-content,
+    .faq-icon > svg {
+      transition: none;
     }
 
     .btn:active,

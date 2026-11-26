@@ -11,8 +11,9 @@ const pt = {
     items: [
       { id: "por-que", label: "Por que um site" },
       { id: "projetos", label: "Projetos" },
-      { id: "servicos", label: "Serviços" },
       { id: "como-funciona", label: "Como funciona" },
+      { id: "precos", label: "Preços" },
+      { id: "duvidas", label: "Dúvidas" },
     ],
     openMenu: "Abrir menu",
     closeMenu: "Fechar menu",
@@ -80,26 +81,45 @@ const pt = {
     nextTitle: "Próximo projeto",
     nextText: "Qualquer segmento, qualquer lugar",
   },
-  services: {
-    title: "O que eu faço",
-    items: [
-      { title: "Site institucional.", text: "Serviços, história, horários, endereço e WhatsApp em uma página." },
-      { title: "Landing page.", text: "Uma página para vender um produto, um serviço ou uma promoção." },
-      { title: "Plano mensal.", text: "Hospedagem, ajustes e suporte, sem você se preocupar com nada." },
-    ],
-    planItems: ["Hospedagem", "Ajustes", "Suporte"],
-  },
   how: {
     title: "Como funciona",
+    text: "Do primeiro contato ao site no ar em até 7 dias.",
     items: [
-      { title: "A gente conversa.", text: "Pelo WhatsApp, você me conta sobre o seu negócio e o que precisa." },
-      { title: "Eu crio, você aprova.", text: "Mostro o site antes de publicar e ajusto o que for preciso." },
-      { title: "Site no ar.", text: "Publicado, rápido no celular e pronto para receber clientes." },
+      {
+        title: "Você me conta sobre o negócio.",
+        text: "Pelo WhatsApp, você manda as informações, fotos e logo. Não precisa entender nada de site.",
+      },
+      {
+        title: "Eu monto e escrevo os textos.",
+        text: "Crio o layout com a cara do seu negócio, pensado para o celular, com botão de WhatsApp.",
+      },
+      {
+        title: "Você vê antes e pede ajustes.",
+        text: "Mostro o site pronto por link. São até 2 rodadas de ajustes inclusas.",
+      },
+      {
+        title: "Site no ar no seu endereço.",
+        text: "Publico com o domínio .com.br no seu nome e o site começa a receber clientes.",
+      },
     ],
+  },
+  guarantee: {
+    title: "Você vê o site pronto antes de fechar.",
+    text: "Monto uma prévia do seu site sem compromisso. Se não gostar, você não paga nada.",
+  },
+  pricing: {
+    title: "Preços",
+    text: "Valor fechado, sem surpresa.",
+    includes: "O que está incluso",
+    button: "Quero este",
+    note: "Não inclui loja virtual, sistema de agendamento, área de login ou fotografia profissional. Se precisar, peça um orçamento.",
+  },
+  faq: {
+    title: "Dúvidas frequentes",
   },
   contact: {
     title: "Pronto para ser encontrado?",
-    text: "Me conte sobre o seu negócio. A conversa é sem compromisso.",
+    text: "Me conte sobre o seu negócio. Eu monto uma prévia sem compromisso.",
     buttonWhatsApp: "Falar no WhatsApp",
     buttonEmail: "Enviar um e-mail",
     orWhatsApp: "ou chame no WhatsApp",
@@ -122,8 +142,9 @@ const en: Content = {
     items: [
       { id: "por-que", label: "Why a website" },
       { id: "projetos", label: "Projects" },
-      { id: "servicos", label: "Services" },
       { id: "como-funciona", label: "How it works" },
+      { id: "precos", label: "Pricing" },
+      { id: "duvidas", label: "FAQ" },
     ],
     openMenu: "Open menu",
     closeMenu: "Close menu",
@@ -188,26 +209,45 @@ const en: Content = {
     nextTitle: "Next project",
     nextText: "Any industry, anywhere",
   },
-  services: {
-    title: "What I do",
-    items: [
-      { title: "Business website.", text: "Services, story, hours, location and contact details on a single page." },
-      { title: "Landing page.", text: "A page built to sell a product, a service or a promotion." },
-      { title: "Monthly plan.", text: "Hosting, updates and support, so you don't have to worry about a thing." },
-    ],
-    planItems: ["Hosting", "Updates", "Support"],
-  },
   how: {
     title: "How it works",
+    text: "From first contact to a live website in up to 7 days.",
     items: [
-      { title: "We talk.", text: "By email, you tell me about your business and what you need." },
-      { title: "I build, you approve.", text: "I show you the website before it goes live and adjust whatever is needed." },
-      { title: "Your site goes live.", text: "Published, fast on mobile and ready to welcome customers." },
+      {
+        title: "You tell me about your business.",
+        text: "By email or WhatsApp, you send your information, photos and logo. No website know-how needed.",
+      },
+      {
+        title: "I build it and write the copy.",
+        text: "I design a layout that fits your business, made for mobile, with clear contact buttons.",
+      },
+      {
+        title: "You see it first and ask for changes.",
+        text: "I send you the finished website as a link. Up to 2 rounds of revisions are included.",
+      },
+      {
+        title: "Live on your own domain.",
+        text: "I publish it on a domain registered in your name, and it starts welcoming customers.",
+      },
     ],
+  },
+  guarantee: {
+    title: "You see your finished website before you commit.",
+    text: "I build a no-commitment preview of your website. If you don't like it, you don't pay anything.",
+  },
+  pricing: {
+    title: "Pricing",
+    text: "Fixed price, no surprises.",
+    includes: "What's included",
+    button: "I want this",
+    note: "Doesn't include an online store, booking system, login area or professional photography. If you need any of these, ask for a quote.",
+  },
+  faq: {
+    title: "Frequently asked questions",
   },
   contact: {
     title: "Ready to be found?",
-    text: "Tell me about your business. No strings attached.",
+    text: "Tell me about your business. I'll build a no-commitment preview.",
     buttonWhatsApp: "Chat on WhatsApp",
     buttonEmail: "Email me",
     orWhatsApp: "or chat on WhatsApp",

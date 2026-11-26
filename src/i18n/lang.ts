@@ -2,8 +2,6 @@ import { createContext, useContext } from "react";
 import { content, type Content } from "../data/content";
 import type { Lang } from "../data/site";
 
-const STORAGE_KEY = "lang";
-
 export interface LangValue {
   lang: Lang;
   t: Content;
@@ -32,28 +30,20 @@ function inBrazil(): boolean {
   }
 }
 
-/**
- * Ordem: ?lang= na URL → escolha salva → quem está no Brasil (pelo fuso horário) vê português,
- * mesmo com o navegador em inglês → idioma do navegador (português = pt, outros = en).
- */
-export function detectLang(): Lang {
-  const fromUrl = new URLSearchParams(window.location.search).get("lang");
-  if (isLang(fromUrl)) return fromUrl;
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (isLang(saved)) return saved;
-  } catch {
-    /* armazenamento bloqueado: segue para o idioma do navegador */
-  }
+/** Idioma de quem chega sem ?lang= no endereço: Brasil (fuso horário) ou navegador em português = pt. */
+export function defaultLang(): Lang {
   if (inBrazil()) return "pt";
   const browser = navigator.languages?.[0] ?? navigator.language ?? "pt";
   return browser.toLowerCase().startsWith("pt") ? "pt" : "en";
 }
 
-export function saveLang(lang: Lang) {
-  try {
-    localStorage.setItem(STORAGE_KEY, lang);
-  } catch {
-    /* sem armazenamento: a escolha vale só nesta visita */
-  }
+/**
+ * Ordem: ?lang= no endereço → padrão do visitante (ver defaultLang).
+ * A escolha não fica salva no navegador: um clique antigo em "EN" não pode fazer quem está
+ * no Brasil abrir o site em inglês depois. O botão de idioma grava a escolha no endereço,
+ * então ela vale ao recarregar e ao compartilhar o link.
+ */
+export function detectLang(): Lang {
+  const fromUrl = new URLSearchParams(window.location.search).get("lang");
+  return isLang(fromUrl) ? fromUrl : defaultLang();
 }

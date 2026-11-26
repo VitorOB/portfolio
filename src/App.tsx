@@ -2,10 +2,13 @@ import { Header } from "./sections/Header";
 import { Hero } from "./sections/Hero";
 import { WhySite } from "./sections/WhySite";
 import { Projects } from "./sections/Projects";
-import { Services } from "./sections/Services";
 import { HowItWorks } from "./sections/HowItWorks";
+import { Guarantee } from "./sections/Guarantee";
+import { Pricing } from "./sections/Pricing";
+import { Faq } from "./sections/Faq";
 import { Contact } from "./sections/Contact";
 import { Footer } from "./sections/Footer";
+import { showPricing } from "./data/site";
 import { useLang } from "./i18n/lang";
 
 export default function App() {
@@ -23,8 +26,10 @@ export default function App() {
         <Hero />
         <WhySite />
         <Projects />
-        <Services />
         <HowItWorks />
+        <Guarantee />
+        {showPricing && <Pricing />}
+        <Faq />
         <Contact />
       </main>
       <Footer />
