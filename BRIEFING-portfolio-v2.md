@@ -1,7 +1,15 @@
 # BRIEFING — Portfólio Vitor Otávio: atualização v2
 
-> Aplicado em 26/11/2026. Onde este briefing cita a identidade antiga (Space Grotesk + Inter, azul `#2348D8`),
-> valeu a identidade "vitrine" descrita em BRIEFING-portfolio.md §2, que é a identidade atual do site.
+> **Aplicado e publicado em 26/11/2026** (commit 6dc1297). O briefing principal (BRIEFING-portfolio.md)
+> já incorpora esta atualização e é a referência daqui em diante. Diferenças em relação ao texto abaixo:
+>
+> - **Identidade:** valeu a identidade "vitrine" (Archivo, azul `#2A36E8`), não a antiga (Space Grotesk + Inter, `#2348D8`).
+>   Os números de "Como funciona" ficaram em círculos pretos, porque o azul é reservado para ação.
+> - **Preços, subtítulo:** saiu "Preço de lançamento para os primeiros clientes." para não passar a ideia de quem está começando.
+> - **Versão em inglês:** não mantém os preços em reais. É para clientes de fora: $290 / $390 / $29 por mês,
+>   pagamento por cartão, PayPal ou transferência, domínio no nome do cliente (sem Pix, 12x nem .com.br).
+>   O botão "Quero este" abre o e-mail (canal principal em inglês) com a mensagem do plano.
+> - **Idioma:** quem está no Brasil sempre vê português; a escolha de idioma fica só no endereço (`?lang=`).
 
 ## 0. Contexto (leia primeiro)
 
