@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
 import type { Project } from "../data/site";
 import { useLang } from "../i18n/lang";
 import { primaryContact } from "../lib/contact";
@@ -6,22 +7,44 @@ import { primaryContact } from "../lib/contact";
 const THUMB_W = 1200;
 const THUMB_H = 750;
 
-const cardBase = "group flex h-full flex-col rounded-[var(--radius-card)] border border-border bg-surface p-3 sm:p-4";
-const linkCard = `${cardBase} transition-colors duration-150 hover:border-ink/30`;
+/**
+ * Cartão sem caixa: a miniatura é a moldura, e o nome fica embaixo como legenda de exposição.
+ * O anel interno (ring-inset) separa miniaturas claras do fundo sem precisar de borda.
+ */
+const cardBase = "group flex h-full flex-col";
 
 function Thumb({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`relative aspect-[16/10] overflow-hidden rounded-[var(--radius-thumb)] ${className}`}>{children}</div>
+    <div
+      className={`relative aspect-[16/10] overflow-hidden rounded-[var(--radius-frame)] ring-1 ring-ink/10 ring-inset ${className}`}
+    >
+      {children}
+    </div>
   );
 }
 
-function Meta({ name, description, badge }: { name: string; description: string; badge?: string }) {
+function Meta({
+  name,
+  description,
+  badge,
+  linked = false,
+}: {
+  name: string;
+  description: string;
+  badge?: string;
+  linked?: boolean;
+}) {
   return (
-    <div className="flex flex-1 flex-col gap-1 px-1 pt-4 pb-1 sm:px-2">
-      <h3 className="text-xl font-semibold tracking-[-0.01em] sm:text-2xl">{name}</h3>
-      <p className="text-[0.9375rem] text-muted">{description}</p>
+    <div className="flex flex-1 flex-col gap-1.5 pt-5">
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="h3 text-[1.75rem] md:text-[2.25rem]">{name}</h3>
+        {linked && (
+          <ArrowUpRight aria-hidden="true" size={26} strokeWidth={1.75} className="arrow-out mt-1 shrink-0" />
+        )}
+      </div>
+      <p className="text-muted">{description}</p>
       {badge && (
-        <p className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-success-soft px-3 py-1 text-sm font-medium text-success">
+        <p className="mt-1 inline-flex w-fit items-center gap-2 text-sm font-medium text-success">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-success" />
           {badge}
         </p>
@@ -41,12 +64,12 @@ export function ProjectCard({ project }: { project: Project }) {
         <Thumb className="flex items-center justify-center">
           <div
             className="absolute inset-0"
-            style={{ backgroundColor: project.placeholderColor ?? "#EEEEEA" }}
+            style={{ backgroundColor: project.placeholderColor ?? "#E4E4E0" }}
             aria-hidden="true"
           />
           <span
             aria-hidden="true"
-            className="relative px-6 text-center font-display text-[clamp(1.5rem,1rem+1.2vw,1.875rem)] leading-none font-semibold tracking-[-0.02em] text-ink/80"
+            className="display relative px-6 text-center text-[clamp(2rem,1.2rem+2vw,3rem)] text-ink/80"
           >
             {project.name}
           </span>
@@ -60,7 +83,7 @@ export function ProjectCard({ project }: { project: Project }) {
   }
 
   const thumb = (
-    <Thumb className="bg-border">
+    <Thumb className="bg-line">
       {project.image && (
         <img
           src={project.image}
@@ -69,7 +92,7 @@ export function ProjectCard({ project }: { project: Project }) {
           height={THUMB_H}
           loading="lazy"
           decoding="async"
-          className="size-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          className="thumb-img size-full object-cover object-top"
         />
       )}
     </Thumb>
@@ -89,31 +112,30 @@ export function ProjectCard({ project }: { project: Project }) {
       href={lang === "en" && project.hasEnglish ? `${project.url}/?lang=en` : project.url}
       target="_blank"
       rel="noopener"
-      className={linkCard}
+      className={cardBase}
     >
       {thumb}
-      <Meta name={project.name} description={description} badge={badge} />
+      <Meta name={project.name} description={description} badge={badge} linked />
       <span className="sr-only">{t.newTab}</span>
     </a>
   );
 }
 
-/** Último cartão da grade: convite para o próximo projeto. */
+/** Último cartão: convite para o próximo projeto, no azul de ação. */
 export function YourBusinessCard() {
   const { lang, t } = useLang();
   const contact = primaryContact(lang);
   return (
     <a
       href={contact.href}
-      className={linkCard}
+      className={cardBase}
       {...(contact.external && { target: "_blank", rel: "noopener" })}
     >
-      <Thumb className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-line bg-bg px-6 text-center">
-        <span className="font-display text-[clamp(1.5rem,1rem+1.2vw,1.875rem)] leading-none font-semibold tracking-[-0.02em]">
-          {t.projects.yourBusiness}
-        </span>
-        <span className="font-semibold text-accent group-hover:underline">
-          {t.projects.quote} <span aria-hidden="true">→</span>
+      <Thumb className="on-accent flex flex-col justify-between bg-accent p-6 text-white ring-0 transition-colors duration-200 group-hover:bg-accent-hover md:p-8">
+        <span className="display max-w-[9ch] text-[clamp(2.5rem,1.4rem+3vw,4.5rem)]">{t.projects.yourBusiness}</span>
+        <span className="inline-flex items-center gap-1.5 font-semibold">
+          {t.projects.quote}
+          <ArrowUpRight aria-hidden="true" size={20} className="arrow-out" />
         </span>
       </Thumb>
       <Meta name={t.projects.nextTitle} description={t.projects.nextText} />

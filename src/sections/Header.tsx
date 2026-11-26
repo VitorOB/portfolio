@@ -11,7 +11,7 @@ function LanguageSwitch() {
     <button
       type="button"
       onClick={() => setLang(target)}
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-ink/20 px-3 text-sm font-semibold tracking-[0.04em] transition-colors duration-150 hover:border-ink"
+      className="btn inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-ink/20 px-3 text-sm font-semibold tracking-[0.04em] hover:border-ink"
     >
       <span lang={target === "en" ? "en" : "pt-BR"}>
         {short}
@@ -24,6 +24,15 @@ function LanguageSwitch() {
 export function Header() {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // No topo o cabeçalho some no fundo; depois de rolar ganha fundo e linha, para separar do conteúdo.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -50,11 +59,14 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/90 backdrop-blur supports-[backdrop-filter]:bg-bg/80">
+    <header
+      data-scrolled={scrolled || open}
+      className="sticky top-0 z-40 border-b border-transparent transition-[background-color,border-color] duration-300 data-[scrolled=true]:border-line data-[scrolled=true]:bg-bg/85 data-[scrolled=true]:backdrop-blur-md"
+    >
       <div className="container-site flex h-16 items-center justify-between gap-3">
         <a
           href="#inicio"
-          className="inline-flex min-h-11 items-center font-display text-lg font-bold tracking-[-0.02em] whitespace-nowrap"
+          className="display inline-flex min-h-11 items-center text-[1.375rem] whitespace-nowrap"
           onClick={() => setOpen(false)}
         >
           {owner.name}
@@ -66,7 +78,7 @@ export function Header() {
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
-                  className="inline-flex min-h-11 items-center rounded-full px-3.5 text-[0.9375rem] text-muted transition-colors duration-150 hover:text-ink"
+                  className="nav-link inline-flex min-h-11 items-center px-3.5 text-[0.9375rem] text-muted hover:text-ink"
                 >
                   {item.label}
                 </a>
@@ -85,7 +97,7 @@ export function Header() {
           <button
             ref={toggleRef}
             type="button"
-            className="inline-flex size-11 items-center justify-center rounded-full text-ink hover:bg-ink/5 lg:hidden"
+            className="btn inline-flex size-11 items-center justify-center rounded-full text-ink hover:bg-ink/5 lg:hidden"
             aria-expanded={open}
             aria-controls="menu-mobile"
             onClick={() => setOpen((v) => !v)}
@@ -96,14 +108,14 @@ export function Header() {
         </div>
       </div>
 
-      <div id="menu-mobile" ref={panelRef} hidden={!open} className="border-t border-line bg-bg lg:hidden">
+      <div id="menu-mobile" ref={panelRef} hidden={!open} className="menu-panel border-t border-line bg-bg lg:hidden">
         <nav aria-label={`${t.nav.label} (mobile)`} className="container-site py-4">
           <ul className="flex flex-col">
             {t.nav.items.map((item) => (
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
-                  className="flex min-h-12 items-center text-lg font-medium"
+                  className="display flex min-h-14 items-center border-b border-line text-[2rem]"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
@@ -111,7 +123,7 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <div className="mt-4 sm:hidden">
+          <div className="mt-6 sm:hidden">
             <ContactButton variant="dark" className="w-full">
               {t.cta}
             </ContactButton>

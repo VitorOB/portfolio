@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState, type FocusEvent, type ReactNo
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { projects, showComingSoon } from "../data/site";
 import { ProjectCard, YourBusinessCard } from "../components/ProjectCard";
-import { Reveal } from "../components/Reveal";
 import { SectionHeading } from "../components/SectionHeading";
 import { useLang } from "../i18n/lang";
 
@@ -164,7 +163,7 @@ function NavButton({ label, disabled = false, onClick, children }: {
       aria-controls={LIST_ID}
       disabled={disabled}
       onClick={onClick}
-      className="inline-flex size-11 items-center justify-center rounded-full border border-ink/25 text-ink transition-colors duration-150 hover:border-ink hover:bg-ink hover:text-white disabled:cursor-default disabled:border-ink/10 disabled:text-ink/30 disabled:hover:bg-transparent"
+      className="btn inline-flex size-12 items-center justify-center rounded-full border border-ink/30 text-ink hover:border-ink hover:bg-ink hover:text-white disabled:cursor-default disabled:border-ink/10 disabled:text-ink/30 disabled:hover:bg-transparent disabled:active:scale-100"
     >
       {children}
     </button>
@@ -178,13 +177,13 @@ export function Projects() {
 
   return (
     <section aria-labelledby="projetos" className="section">
-      <Reveal className="container-site">
+      <div className="container-site">
         <SectionHeading
           id="projetos"
           title={t.projects.title}
           text={t.projects.text}
           aside={
-            <div className="flex shrink-0 items-center justify-between gap-6 md:flex-col md:items-end md:gap-4">
+            <div className="flex w-full max-w-[44ch] shrink-0 items-center justify-between gap-6">
               <p className="text-sm text-muted">{t.projects.note}</p>
               {scrollable && (
                 <div className="flex gap-2">
@@ -226,14 +225,18 @@ export function Projects() {
 
         {/* Barra de progresso: mostra quanto da lista já foi visto. */}
         {scrollable && (
-          <div aria-hidden="true" className="relative mt-6 h-0.5 overflow-hidden rounded-full bg-line">
+          <div aria-hidden="true" className="relative mt-10 h-px overflow-hidden bg-line">
             <div
-              className="absolute inset-y-0 rounded-full bg-ink transition-[left] duration-300"
-              style={{ width: `${state.ratio * 100}%`, left: `${state.progress * (1 - state.ratio) * 100}%` }}
+              className="absolute inset-y-0 left-0 bg-ink transition-transform duration-500 ease-[var(--ease-in-out)] motion-reduce:transition-none"
+              // translateX em % é relativo à própria barra: desloca (progresso × espaço livre) / largura da barra.
+              style={{
+                width: `${state.ratio * 100}%`,
+                transform: `translateX(${(state.progress * (1 - state.ratio) * 100) / state.ratio}%)`,
+              }}
             />
           </div>
         )}
-      </Reveal>
+      </div>
     </section>
   );
 }

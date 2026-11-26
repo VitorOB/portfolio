@@ -62,7 +62,7 @@ function seoFromSiteData(): Plugin {
   };
 }
 
-/** Pré-carrega a fonte do h1 (Space Grotesk 600, latin), cujo nome recebe hash no build. */
+/** Pré-carrega a fonte do site (Archivo variável, latin), cujo nome recebe hash no build. */
 function preloadDisplayFont(): Plugin {
   return {
     name: "preload-display-font",
@@ -71,9 +71,9 @@ function preloadDisplayFont(): Plugin {
       order: "post",
       handler(html, ctx) {
         const file = Object.keys(ctx.bundle ?? {}).find((f) =>
-          /space-grotesk-latin-600-normal-[\w-]+\.woff2$/.test(f),
+          /archivo-latin-wdth-normal-[\w-]+\.woff2$/.test(f),
         );
-        if (!file) throw new Error("preload-display-font: woff2 da Space Grotesk 600 não encontrado no bundle");
+        if (!file) throw new Error("preload-display-font: woff2 da Archivo não encontrado no bundle");
         const tag = `<link rel="preload" as="font" type="font/woff2" href="/${file}" crossorigin />`;
         return html.replace("</title>", `</title>\n    ${tag}`);
       },

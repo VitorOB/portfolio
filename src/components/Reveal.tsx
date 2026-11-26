@@ -1,32 +1,43 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ElementType, type ReactNode } from "react";
 
-/** Fade + leve subida ao entrar na tela, uma única vez. O CSS respeita prefers-reduced-motion. */
-export function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+/**
+ * Marca o bloco com .is-in quando ele entra na tela (uma vez só).
+ * Os filhos com .rv aparecem, cada um com o seu atraso (--rv). Ver index.css.
+ */
+export function InView({
+  as: Tag = "div",
+  children,
+  className = "",
+}: {
+  as?: ElementType;
+  children: ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (!("IntersectionObserver" in window)) {
-      el.classList.add("is-visible");
+      el.classList.add("is-in");
       return;
     }
-    const observer = new IntersectionObserver(
+    const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add("is-visible");
-          observer.disconnect();
+          el.classList.add("is-in");
+          io.disconnect();
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
+      { rootMargin: "0px 0px -12% 0px" },
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   return (
-    <div ref={ref} className={`reveal ${className}`}>
+    <Tag ref={ref} className={className}>
       {children}
-    </div>
+    </Tag>
   );
 }

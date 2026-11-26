@@ -26,7 +26,7 @@ npm run lint
 
 - Textos das seções: `src/data/content.ts` (objetos `pt` e `en`, com o mesmo formato).
 - Textos ligados aos dados (descrição e selo dos projetos, mensagem do WhatsApp, título e descrição do Google) ficam em `src/data/site.ts` como `{ pt: "...", en: "..." }`.
-- Idioma inicial: `?lang=en` na URL → escolha salva no navegador → idioma do navegador (português = PT, qualquer outro = EN).
+- Idioma inicial: `?lang=en` na URL → escolha salva no navegador → fuso horário do Brasil = PT → idioma do navegador (português = PT, qualquer outro = EN).
 - Para mandar o link já em inglês a um cliente: `https://seu-site/?lang=en`.
 
 ## Adicionar um projeto novo

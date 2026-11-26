@@ -22,7 +22,8 @@ const pt = {
   cta: "Quero meu site",
   hero: {
     eyebrow: "Criação de sites profissionais",
-    title: "Seu cliente procurou no Google. Encontrou você ou o concorrente?",
+    /** Uma frase por linha: cada uma entra separada na abertura da página. */
+    title: ["Seu cliente procurou no Google.", "Encontrou você ou o concorrente?"],
     text: "Crio sites profissionais que passam confiança, abrem rápido no celular e levam o cliente direto para o seu WhatsApp. Para negócios de qualquer segmento.",
     secondary: "Ver projetos",
   },
@@ -47,6 +48,21 @@ const pt = {
         text: "Serviços, horários e endereço em um só lugar. O cliente chega no WhatsApp pronto para fechar.",
       },
     ],
+    /** Textos das pequenas ilustrações de cada motivo (exemplos com os sites demonstrativos). */
+    visual: {
+      query: "padaria artesanal perto de mim",
+      resultTitle: "Forno & Grão · Padaria artesanal",
+      resultText: "Pães de fermentação natural, doces de vitrine e café especial.",
+      infoTitle: "Studio Lírio",
+      infoRows: [
+        ["Horário", "Ter a sáb · 9h às 19h"],
+        ["Endereço", "Rua das Magnólias, 120"],
+        ["Agendamento", "Pelo WhatsApp"],
+      ] as [string, string][],
+      infoStatus: "Informações sempre no ar",
+      chatIn: "Oi! Vi o cardápio no site. Quero 2 marmitas de frango para as 12h.",
+      chatOut: "Perfeito, anotado! Fica pronto às 11h50.",
+    },
   },
   projects: {
     title: "Projetos",
@@ -71,6 +87,7 @@ const pt = {
       { title: "Landing page.", text: "Uma página para vender um produto, um serviço ou uma promoção." },
       { title: "Plano mensal.", text: "Hospedagem, ajustes e suporte, sem você se preocupar com nada." },
     ],
+    planItems: ["Hospedagem", "Ajustes", "Suporte"],
   },
   how: {
     title: "Como funciona",
@@ -115,7 +132,7 @@ const en: Content = {
   cta: "Get my website",
   hero: {
     eyebrow: "Professional website design",
-    title: "Your customer searched on Google. Did they find you or your competitor?",
+    title: ["Your customer searched on Google.", "Did they find you or your competitor?"],
     text: "I build professional websites that build trust, load fast on mobile and turn visitors into customers. For businesses in any industry.",
     secondary: "See projects",
   },
@@ -140,6 +157,20 @@ const en: Content = {
         text: "Services, hours and address in one place. Customers reach out ready to buy.",
       },
     ],
+    visual: {
+      query: "artisan bakery near me",
+      resultTitle: "Forno & Grão · Artisan bakery",
+      resultText: "Sourdough bread, pastries and specialty coffee.",
+      infoTitle: "Studio Lírio",
+      infoRows: [
+        ["Hours", "Tue to Sat · 9am to 7pm"],
+        ["Address", "Rua das Magnólias, 120"],
+        ["Booking", "Via WhatsApp"],
+      ],
+      infoStatus: "Information always online",
+      chatIn: "Hi! I saw the menu on your website. I'd like 2 chicken lunch boxes for noon.",
+      chatOut: "Perfect, noted! It'll be ready at 11:50.",
+    },
   },
   projects: {
     title: "Projects",
@@ -164,6 +195,7 @@ const en: Content = {
       { title: "Landing page.", text: "A page built to sell a product, a service or a promotion." },
       { title: "Monthly plan.", text: "Hosting, updates and support, so you don't have to worry about a thing." },
     ],
+    planItems: ["Hosting", "Updates", "Support"],
   },
   how: {
     title: "How it works",
